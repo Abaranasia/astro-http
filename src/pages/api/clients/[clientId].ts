@@ -5,25 +5,38 @@ import { Clients, db, eq } from "astro:db";
 export const prerender = false; // Make this page server side rendered (not static)
 
 export const GET: APIRoute = async ({ params, request }) => {
-    const {id} = params;
+    const clientId = params.clientId ?? '';
 
-    // const post = await getEntry('Clients', id as any);
-
- /*    if (!post) {
-        return new Response(JSON.stringify({ msg: `Post ${id} not found`}), {
-            status: 404,
-            headers: {
-              "Content-Type": "Application/json",
-            },
-        });
-    } */
-
-    return new Response(JSON.stringify(id), {
-        status: 200,
-        headers: {
-            "Content-Type": "Application/json",
-          },
-    })
+    try {
+        const response = await db.select().from(Clients).where(eq(Clients.id, +clientId))
+        console.log('response :>> ', response);
+    
+        if (response.length>0) {
+            return new Response(
+              JSON.stringify(response.at(0)),
+              {
+                status: 200,
+                headers: {
+                  "Content-Type": "Application/json",
+                },
+              }
+            );
+        } else {
+            throw new Error ('not found')
+        }
+      } catch (error) {
+        return new Response(
+            JSON.stringify({
+              msg: `client ${clientId} not found`,
+            }),
+            {
+              status: 404,
+              headers: {
+                "Content-Type": "Application/json",
+              },
+            }
+          );
+      }
 };
 
 export const PATCH: APIRoute = async ({ params, request }) => {
