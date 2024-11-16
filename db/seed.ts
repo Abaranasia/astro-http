@@ -14,7 +14,7 @@ export default async function seed() {
 	const posts = await getCollection('blog');
 	await db.insert(Posts).values(
 		posts.map(p => ({
-			id: p.id,
+			id: p.slug,
 			title: p.data.title,
 			likes: Math.round(Math.random() *100)
 		}))
