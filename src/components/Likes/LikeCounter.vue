@@ -15,6 +15,7 @@
 
 <script lang="ts" setup>
     import { ref } from 'vue';
+    import confetti from 'canvas-confetti';
 
     interface Props {
         postId: string;
@@ -29,6 +30,16 @@
 
     const handleLike = () => {
         likeCount.value= likeCount.value + 1;
+        likeClicks.value++;
+        
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: {
+                x: Math.random(),
+                y: Math.random() - 0.2,
+            }
+        })
     }
 
     const getCurrentLikes = async() => {
