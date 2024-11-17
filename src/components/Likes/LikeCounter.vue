@@ -10,12 +10,14 @@
     <button v-else @click="handleLike">
         Like!
         <span>{{ likeCount }}</span>
+        {{ likeClicks }}
     </button>
 </template>
 
 <script lang="ts" setup>
     import { ref, watch } from 'vue';
     import confetti from 'canvas-confetti';
+    import debounce from 'lodash.debounce';
 
     interface Props {
         postId: string;
@@ -27,7 +29,7 @@
     const likeClicks= ref(0);
     const isLoading= ref(true);
 
-    watch(likeCount, () => {
+    watch(likeCount, debounce(() => {
         console.log('likeCount :>> ', likeCount.value);
 
         fetch(`/api/posts/likes/${props.postId}`, {
@@ -38,7 +40,7 @@
             body: JSON.stringify({likes: likeClicks.value})
         });
         likeClicks.value = 0;
-    });
+    }, 500));
 
     const handleLike = () => {
         likeCount.value= likeCount.value + 1;
