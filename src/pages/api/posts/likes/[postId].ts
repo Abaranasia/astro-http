@@ -59,7 +59,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
       const post = posts.at(0)!;
       post.likes = post.likes + likes;
 
-      db.update(Posts).set(post).where(
+      await db.update(Posts).set(post).where(
         eq(Posts.id, postId),
       )
       return new Response('Ok!', {status: 200});
