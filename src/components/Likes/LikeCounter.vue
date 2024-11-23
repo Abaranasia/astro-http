@@ -47,7 +47,7 @@
         likeCount.value= likeCount.value + 1;
         likeClicks.value++;
         
-        const resp = await actions.getGreeting({
+        const resp = await actions.getGreeting({ // Server action examnple
             name: 'pepe',
             age: '25',
             isActive: true,
