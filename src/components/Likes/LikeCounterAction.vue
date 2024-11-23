@@ -30,16 +30,14 @@
     const likeClicks= ref(0);
     const isLoading= ref(true);
 
-    watch(likeCount, debounce(() => {
+    watch(likeCount, debounce(async() => {
         console.log('likeCount :>> ', likeCount.value);
 
-        fetch(`/api/posts/likes/${props.postId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({likes: likeClicks.value})
-        });
+        await actions.updateLikes({
+            postId: props.postId, 
+            increment: likeClicks.value
+        }); 
+
         likeClicks.value = 0;
     }, 500));
 
@@ -47,14 +45,6 @@
         likeCount.value= likeCount.value + 1;
         likeClicks.value++;
         
-        const resp = await actions.getGreeting({ // Server action examnple
-            name: 'pepe',
-            age: '25',
-            isActive: true,
-        });
-        
-        if (resp.data) console.log('resp.data :>> ', resp.data);
-
         confetti({
             particleCount: 100,
             spread: 70,
@@ -66,11 +56,6 @@
     }
 
     const getCurrentLikes = async() => {
-/*      const resp = await fetch(`/api/posts/likes/${props.postId}`)
-        if ( !resp.ok) return; 
-        const data = await resp.json();
-        */
-
         const { data, error } = await actions.getPostLikes(props.postId);
         if (error) return alert(error);
         
